@@ -10,11 +10,13 @@ def check_docker():
 
 def create_wordpress_site(site_name):
     try:
-        subprocess.run(["docker", "run", "-d", "--name", site_name, "-p", "80:80", "wordpress:latest"])
+        subprocess.run(["docker", "run", "-d", "--name", site_name, "-p", "8080:80", "-v", f"{site_name}:/var/www/html", "wordpress:latest"])
+        subprocess.run(["docker", "exec", site_name, "chown", "-R", "www-data:www-data", "/var/www/html"])
         print("WordPress site created successfully!")
-        print(f"Access your site at http://localhost/{site_name}")
+        print(f"Access your site at http://localhost:8080/{site_name}")
     except subprocess.CalledProcessError as e:
         print(f"Error creating the WordPress site: {e}")
+
 
 def stop_wordpress_site(site_name):
     try:
